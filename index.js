@@ -1,4 +1,4 @@
-import { promises as fs } from 'fs';
+import { link, promises as fs } from 'fs';
 
 // Cómo leer ./archivo.md?
 async function readingFiles(file) {
@@ -17,8 +17,11 @@ export async function mdLinks (path, options) {
       console.log(txt);
       let url = el.match(/\((.*?)\)/)[1]; // getting link only
       console.log(url);
-      const urlArray = [];
+      const urlArray = []; // empty array to storage the url
+      const linkTxtArray = []; // empty array to storage the file txt
+      linkTxtArray.push(txt);
       urlArray.push(url);
+      console.log(linkTxtArray);
       console.log(urlArray);
     }
   }
