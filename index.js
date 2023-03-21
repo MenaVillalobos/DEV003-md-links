@@ -10,7 +10,6 @@ async function readingFiles(file) {
   const fileContent = await fs.readFile(file, {encoding: 'utf-8'});
   return fileContent;
 }
-
 export async function mdLinks (pathFile, options) {
   // Validando path
 if (existsSync(pathFile)){
@@ -21,9 +20,11 @@ if (existsSync(pathFile)){
     console.log('THE PATH IS ABSOLUTE!'.bgBlue);
   } else {
     console.log('SORRY, THIS PATH IS NOT ABSOLUTE):'.bgCyan);
+    // Turn relative to absolute
+    const relativeToAbsolute = path.resolve(pathFile);
+    console.log( 'Your path now is absolute: '.bgMagenta + relativeToAbsolute.magenta);
   }
-
-  // Path válido entonces lee archivo
+  // Path válido y absoluto entonces lee archivo
     let elements = data.match(/\[.*?\)/g);
     if (elements != null && elements.length > 0) {
       for (const el of elements){
