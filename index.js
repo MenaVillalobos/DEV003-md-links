@@ -5,7 +5,7 @@ import  { isAbsolute }  from 'node:path';
 import path from 'path';
 
 
-// Cómo leer ./archivo.md?
+// How to read ./file.md?
 async function readingFiles(file) {
   const fileContent = await fsPromises.readFile(file, {encoding: 'utf-8'});
   return fileContent;
@@ -25,9 +25,15 @@ if (existsSync(pathFile)){
   }
   // Is a path to a file?
   if (fs.statSync(pathFile).isFile()) {
-    console.log("PATH IS FILE: TRUE".underline.green);
+    console.log("PATH IS FILE: TRUE".underline.blue);
+  } else{
+    console.log('THIS IS NOT A FILE, TRY AGAIN'.underline.red);
+  }
+  // Getting file extension
+  if (path.extname(pathFile) === ".md") {
+    console.log('THIS IS AN '.yellow + '.md'.bgYellow + ' FILE(:'.yellow);
     let data = await readingFiles(pathFile);
-    // Path válido, absoluto te dirige a un archivo empieza a leerlo
+    // Path is valid, absolut and a path file, so let´s read file
     let elements = data.match(/\[.*?\)/g);
     if (elements && elements.length > 0) {
       for (const el of elements){
@@ -43,12 +49,9 @@ if (existsSync(pathFile)){
         console.log(urlArray);
       }
     }
-  } else{
-    console.log('THIS IS NOT A FILE, TRY AGAIN'.underline.red);
+  } else {
+    console.log('THIS IS NOT AN .md FILE, TRY AGAIN'.red.bold);
   }
-  // const statsObj = fs.statSync(pathFile);
-  // console.log("Path is file:".underline.green ,statsObj.isFile());
-
 } else {
   console.log('PATH NOT FOUND'.red);
 } 
