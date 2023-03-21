@@ -1,6 +1,9 @@
 import { link, promises as fs } from 'fs';
 import colors from 'colors';
 import { existsSync } from 'node:fs';
+import  { isAbsolute }  from 'node:path';
+import path from 'path';
+
 
 // Cómo leer ./archivo.md?
 async function readingFiles(file) {
@@ -8,11 +11,18 @@ async function readingFiles(file) {
   return fileContent;
 }
 
-export async function mdLinks (path, options) {
-// Validando path
-if (existsSync(path)){
+export async function mdLinks (pathFile, options) {
+  // Validando path
+if (existsSync(pathFile)){
   console.log('THE PATH EXISTS'.rainbow);
-  let data = await readingFiles(path);
+  let data = await readingFiles(pathFile);
+  // Path absolute
+  if (path.isAbsolute(pathFile)) {
+    console.log('THE PATH IS ABSOLUTE!'.bgBlue);
+  } else {
+    console.log('SORRY, THIS PATH IS NOT ABSOLUTE):'.bgCyan);
+  }
+
   // Path válido entonces lee archivo
     let elements = data.match(/\[.*?\)/g);
     if (elements != null && elements.length > 0) {
