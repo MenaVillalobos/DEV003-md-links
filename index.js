@@ -2,6 +2,7 @@ import fs, {promises as fsPromises } from 'fs';
 import colors from 'colors';
 import { existsSync } from 'node:fs';
 import path from 'path';
+import { httpRequest } from './ax.js';
 
 // How to read ./file?
 async function readingFiles(file) {
@@ -31,18 +32,26 @@ if (existsSync(pathFile)){
     // Reading .md file
     let elements = data.match(/\[.*?\)/g);
     if (elements && elements.length > 0) {
+      const urlArray = []; // empty array to storage the url
+      const linksObject = [];
       for (const el of elements){
-        // let txt = el.match(/\[(.*?)\]/)[1]; // getting txt only
+       let txt = el.match(/\[(.*?)\]/)[1]; // getting txt only
         // console.log(txt);
         let url = el.match(/\((.*?)\)/)[1]; // getting link only
         // console.log(url);
-        const urlArray = []; // empty array to storage the url
+        urlArray.push(url);
         // const linkTxtArray = []; // empty array to storage the file txt
         // linkTxtArray.push(txt);
-        urlArray.push(url);
-        // console.log(linkTxtArray);
-        console.log(urlArray);
+        linksObject.push({
+          text: txt,
+          href: url,
+          file: pathFile,
+        });
       }
+      for (let i = 0; i < urlArray.length; i++) {
+        httpRequest(urlArray[i]);
+      }
+      console.log(linksObject);
     }
   } else {
     console.log('THIS IS NOT AN .md FILE, TRY AGAIN'.red.bold);
