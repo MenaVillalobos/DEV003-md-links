@@ -10,6 +10,7 @@ async function readingFiles(file) {
   return fileContent;
 }
 export async function mdLinks (pathFile, options) {
+ 
   // Validando path
 if (existsSync(pathFile)){
   console.log('THE PATH EXISTS'.rainbow);
@@ -48,10 +49,17 @@ if (existsSync(pathFile)){
           file: pathFile,
         });
       }
-      for (let i = 0; i < urlArray.length; i++) {
-        httpRequest(urlArray[i]);
+      // options.validate = true:
+      if (options.validate) {
+        for (let i = 0; i < urlArray.length; i++) {
+          httpRequest(urlArray[i]);
+        }
       }
       console.log(linksObject);
+    }
+    //AQUI VA CODIGO PARA STATS
+    if (options.stats) {
+      console.log('stats=true');
     }
   } else {
     console.log('THIS IS NOT AN .md FILE, TRY AGAIN'.red.bold);
@@ -63,4 +71,3 @@ if (existsSync(pathFile)){
   console.log('PATH NOT FOUND'.red);
 } 
 }
-mdLinks(process.argv[2], {});
