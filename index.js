@@ -1,5 +1,6 @@
 import fs, {promises as fsPromises } from 'fs';
 import colors from 'colors';
+import { validatePath, pathToRelative, pathIsFile, pathIsFolder, getFolderFiles } from './api.js';
 import { existsSync } from 'node:fs';
 import path from 'path';
 import { httpRequest } from './ax.js';
@@ -10,22 +11,15 @@ async function readingFiles(file) {
   return fileContent;
 }
 export async function mdLinks (pathFile, options) {
- 
   // Validando path
-if (existsSync(pathFile)){
+if (validatePath(pathFile)){
   console.log('THE PATH EXISTS'.rainbow);
   // Path absolute
-  if (path.isAbsolute(pathFile)) {
-    console.log('THE PATH IS ABSOLUTE!'.bgBlue);
-  } else {
-    console.log('CHANGING RELATIVE PATH TO ABSOLUTE...'.cyan);
-    // Turn relative to absolute
-    const relativeToAbsolute = path.resolve(pathFile);
-    console.log( 'Your path now is absolute: '.bgCyan + relativeToAbsolute.cyan);
-  }
+  pathToRelative(pathFile);
   // Is a path to a file?
-  if (fs.statSync(pathFile).isFile()) {
+  if (pathIsFile(pathFile)) {
     console.log("PATH IS FILE: TRUE".underline.blue);
+
       // Getting file extension
   if (path.extname(pathFile) === ".md") {
     console.log('THIS IS AN '.yellow + '.md'.bgYellow + ' FILE(:'.yellow);
@@ -64,10 +58,13 @@ if (existsSync(pathFile)){
   } else {
     console.log('THIS IS NOT AN .md FILE, TRY AGAIN'.red.bold);
   }
+  } else if (pathIsFolder(pathFile)) {
+    getFolderFiles(pathFile);
+    console.log('I S   A   F O L D E R'.bgMagenta);
   } else{
     console.log('THIS IS NOT A FILE, TRY AGAIN'.underline.red);
   }
-} else {
-  console.log('PATH NOT FOUND'.red);
-} 
+  } else {
+  console.log('THE PATH DOES NOT EXISTS'.red);
+}
 }
