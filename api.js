@@ -36,8 +36,14 @@ fs.readdir(folderPath, function (err, files) {
     } 
     //listing all files using forEach
     files.forEach(function (file) {
-        // Do whatever you want to do with the file
-        console.log(file); 
+        // Do whatever you want to do with the file 
+        if (path.extname(file) === ".md") {
+            console.log('THIS IS AN .md FILE(:'.yellow);
+            const arrFolder = [];
+            const folderFile = arrFolder.push(file);
+            arrFolder.push(pathToRelative(file));
+            console.log(folderFile);
+        } 
     });
 });
 }
