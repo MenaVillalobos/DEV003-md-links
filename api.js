@@ -3,6 +3,7 @@ import fs, {promises as fsPromises } from 'fs';
 import { existsSync } from 'node:fs';
 import path from 'path';
 import { readingFiles } from './index.js';
+import { httpRequest } from './ax.js';
 
 // Function validate path
 export const validatePath = (pathFile) => (existsSync(pathFile));
@@ -10,9 +11,11 @@ export const validatePath = (pathFile) => (existsSync(pathFile));
 export const pathIsFile = (pathFile) => (fs.statSync(pathFile).isFile());
 // Function check if is directory
 export const pathIsFolder = (pathFile) => (fs.statSync(pathFile).isDirectory()); 
+// Reading directory
+export const readFolder = (pathFile) => fs.readdirSync(pathFile); //Recorre la carpeta
 
-//Creando función para transformar ruta relativa
-export function pathToRelative(pathFile) {
+//Function path for files (S I   F U N C I O N A)
+export function pathToAbsolute(pathFile) {
     if (path.isAbsolute(pathFile)) {
         console.log('THE PATH IS ABSOLUTE!'.bgBlue);
     } else {
@@ -23,57 +26,73 @@ export function pathToRelative(pathFile) {
     }
 }
 
-// Getting folder's files
-export async function getFolderFiles(pathFile) {
-    const arrFolder = [];
+// Getting folder's files (S I   F U N C I O N A)
+export function getFolderFiles(pathFile) {
     const folderPath = path.join(pathFile);
     //passsing directoryPath and callback function
-    fs.readdir(folderPath, async function (err, files) {
-    //handling error
-    if (err) {
-        return console.log('Unable to scan directory: ' + err);
-    } 
-    //listing all files using forEach
-    files.forEach(function (file) {
-        // Do whatever you want to do with the file 
-        if (path.extname(file) === ".md") {
-            console.log('Checking if there is an md file...'.blue);
-            arrFolder.push(pathFile+ "/" + file);
-            console.log(`${file} ${'IS AN MD FILE(:'.magenta}`);
-            const arrTurnAbs = pathToRelative(file);
-        } 
-    });
-for (let i = 0; i < arrFolder.length; i++) {
-    let data = await readingFiles(arrFolder[i]);
-    console.log('THIS IS YOUR FILE: '.magenta + arrFolder[i]);
-    gettingUrls(data);
-}
-});
+    return fs.readdirSync(folderPath);
 }
 
-// Getting URL's from folder files
-export function gettingUrls(data) {
-    console.log('GETTING URLS...'.bold);
+// Function filter folder md files
+export function filterFolderMdFiles(files) {
+    return files.filter(
+        (file) => {
+            return path.extname(file) === ".md"
+        }
+    )
+}
+
+
+// Function get file extension (S I   F U N C I O N A )
+export function gettingFileExt(pathFile) {
+    if (path.extname(pathFile) === ".md") {
+        console.log(`${pathFile} ${'IS AN MD FILE(:'.magenta}`);
+        return true;
+    }
+    return false;
+}
+
+// Getting URL's from files
+export function gettingUrls(data, pathFile, options) {
+    // console.log('GETTING URLS...'.bold);
     let elements = data.match(/\[.*?\)/g);
     if (elements && elements.length > 0) {
-      const urlArray = []; // empty array to storage the url
-        for (const el of elements){
-       let txt = el.match(/\[(.*?)\]/)[1]; // getting txt only
-        // console.log(txt);
-        let url = el.match(/\((.*?)\)/)[1]; // getting link only
-        // console.log(url);
-        urlArray.push(url);
-        // const linkTxtArray = []; // empty array to storage the file txt
-        // linkTxtArray.push(txt);
+        const urlArray = []; // empty array to storage the url
         const linksObject = [];
-        linksObject.push({
-            text: txt,
-            href: url,
-            file: 'necesito la ruta absoluta'
-        })
-        console.log(linksObject);
+        for (const el of elements){
+            let txt = el.match(/\[(.*?)\]/)[1]; // getting txt only
+            // console.log(txt);
+            let url = el.match(/\((.*?)\)/)[1]; // getting link only
+            // console.log(url);
+            urlArray.push(url);
+            let httpReqAnswer;
+            const linkObj = {
+                text: txt,
+                href: url,
+                file: pathFile
+            }
+            if (options.validate) {
+                httpReqAnswer = httpRequest(url);
+                // console.log(httpReqAnswer);
+                linkObj.status = httpReqAnswer.status;
+                linkObj.ok = httpReqAnswer.ok;
+            }
+            // const linkTxtArray = []; // empty array to storage the file txt
+            // linkTxtArray.push(txt);
+            linksObject.push(linkObj);
+            // const getTotalLinks = (linksObject) => {return 'Total: ' + linksObject.length};
+            // console.log(linksObject.length + 'Total de URLS'.bgRed);
+            
         }
-        console.log(urlArray);
-        return {urlArray}
-    } 
+        // console.log(urlArray);
+        return {urlArray, linksObject}
+    }
+    
 } 
+
+export function getUniqueUrls(urlArray) {
+    let uniqueUrls = urlArray.filter((c, index) => {
+        return urlArray.indexOf(c) === index;
+    });
+    console.log('UNIQUE LINKS: '.green + uniqueUrls.length);
+}

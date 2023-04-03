@@ -1,11 +1,11 @@
 // Aquí va --stats, --validate
-import _yargs from 'yargs';
-import { hideBin } from 'yargs/helpers';
+import yargs from 'yargs'
+import { hideBin } from 'yargs/helpers'
 import { mdLinks } from './index.js';
-const yargs = _yargs(hideBin(process.argv));
+import colors from 'colors';
 
-(async () => {
-    const argv = await yargs
+const yarg = yargs(hideBin(process.argv))
+yarg
         .option('filename', { type: 'string'})
         .alias('f', 'filename')
 
@@ -26,23 +26,30 @@ const yargs = _yargs(hideBin(process.argv));
         })
         .argv;
 
-        console.log(argv._);
+        // console.log(yarg.argv);
         // console.log('validate: yargs', argv.v);
         const options = {
             validate: false,
             stats: false,
         }
-        if (argv.v) {
+        if (yarg.argv.v) {
             console.log('Ingresó -v');
             options.validate = true;
         } 
-        if (argv.s) {
+        if (yarg.argv.s) {
             console.log('Ingresó -s');
             options.stats = true;
         }
-        mdLinks(argv._[0], options);
-})
-();
+        mdLinks(yarg.argv._[0], options).then(
+            (linksObject) => {
+                console.log('resolviendo promesa...');
+                console.log(linksObject);
+            }
+        ).catch(
+            (error) =>{
+                console.log(error.red);
+            }
+        );
 
 // Crear objeto options 
 // Caso 1: ambos valores false
