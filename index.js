@@ -34,7 +34,6 @@ if (validatePath(pathFile)){
         if (folderMdFiles.length === 0) {
           return Promise.reject('THERE IS NO MD FILES IN THIS DIRECTORY');
         }
-
         let mergeObjects = [];
         for (let i = 0; i < folderMdFiles.length; i++) {
             let data = readingFiles(folderMdFiles[i]);

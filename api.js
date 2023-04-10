@@ -5,16 +5,14 @@ import path from 'path';
 import { readingFiles } from './index.js';
 import { httpRequest } from './ax.js';
 
-// Function validate path
+// ✅ Function validate path
 export const validatePath = (pathFile) => (existsSync(pathFile));
-// Function check if path is file
+// ✅ Function check if path is file
 export const pathIsFile = (pathFile) => (fs.statSync(pathFile).isFile());
-// Function check if is directory
+// ✅ Function check if is directory
 export const pathIsFolder = (pathFile) => (fs.statSync(pathFile).isDirectory()); 
-// Reading directory
-export const readFolder = (pathFile) => fs.readdirSync(pathFile); //Recorre la carpeta
 
-//Function path for files (S I   F U N C I O N A)
+// ✅ Function path for files (S I   F U N C I O N A)
 export function pathToAbsolute(pathFile) {
     if (path.isAbsolute(pathFile)) {
         console.log('THE PATH IS ABSOLUTE!'.bgBlue);
@@ -23,17 +21,18 @@ export function pathToAbsolute(pathFile) {
         // Turn relative to absolute
         const relativeToAbsolute = path.resolve(pathFile);
         console.log( 'Your path now is absolute: '.bgCyan + relativeToAbsolute.cyan);
+        return relativeToAbsolute;
     }
 }
 
-// Getting folder's files (S I   F U N C I O N A)
+// ✅ Getting folder's files (S I   F U N C I O N A)
 export function getFolderFiles(pathFile) {
     const folderPath = path.join(pathFile);
     //passsing directoryPath and callback function
     return fs.readdirSync(folderPath);
 }
 
-// Function filter folder md files
+// ✅ Function filter folder md files
 export function filterFolderMdFiles(files) {
     return files.filter(
         (file) => {
@@ -43,7 +42,7 @@ export function filterFolderMdFiles(files) {
 }
 
 
-// Function get file extension (S I   F U N C I O N A )
+// ✅ Function get file extension (S I   F U N C I O N A )
 export function gettingFileExt(pathFile) {
     if (path.extname(pathFile) === ".md") {
         console.log(`${pathFile} ${'IS AN MD FILE(:'.magenta}`);
@@ -52,7 +51,7 @@ export function gettingFileExt(pathFile) {
     return false;
 }
 
-// Getting URL's from files
+// ✅ Getting URL's from files
 export function gettingUrls(data, pathFile, options) {
     // console.log('GETTING URLS...'.bold);
     let elements = data.match(/\[.*?\)/g);
@@ -61,9 +60,7 @@ export function gettingUrls(data, pathFile, options) {
         const linksObject = [];
         for (const el of elements){
             let txt = el.match(/\[(.*?)\]/)[1]; // getting txt only
-            // console.log(txt);
             let url = el.match(/\((.*?)\)/)[1]; // getting link only
-            // console.log(url);
             urlArray.push(url);
             let httpReqAnswer;
             const linkObj = {
@@ -90,9 +87,11 @@ export function gettingUrls(data, pathFile, options) {
     
 } 
 
+// ✅ Get unique urls for stats
 export function getUniqueUrls(urlArray) {
     let uniqueUrls = urlArray.filter((c, index) => {
         return urlArray.indexOf(c) === index;
     });
     console.log('UNIQUE LINKS: '.green + uniqueUrls.length);
+    return uniqueUrls
 }
