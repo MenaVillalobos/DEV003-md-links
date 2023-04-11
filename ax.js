@@ -1,3 +1,4 @@
+
 import axios from 'axios';
 import colors from 'colors';
 
@@ -6,14 +7,15 @@ export async function httpRequest (URL) {
     status: '',
     ok: ''
   }
-  axios.get(URL)
+  return await axios.get(URL)
   .then((response) => {
     // answer = `${"STATUS:".underline.blue} ${response.status} ${response.statusText.underline.blue}`;
     // console.log(`${URL}   ${answer}`);
     answer.status = response.status;
     answer.ok = response.statusText;
     return answer;
-  }).catch(error => {
+  })
+  .catch(error => {
     if (error.response) { // status code out of the range of 2xx
       // answer = `${"STATUS:".underline.red} ${error.response.status} ${error.response.statusText.underline.red}`;
       // console.log(`${URL}   ${answer}`);

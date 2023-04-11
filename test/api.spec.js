@@ -1,5 +1,5 @@
 // import { describe } from "yargs";
-import { validatePath, pathToAbsolute, pathIsFile, pathIsFolder, getFolderFiles, filterFolderMdFiles, gettingFileExt, gettingUrls, getUniqueUrls } from "../api";
+import { validatePath, pathToAbsolute, pathIsFile, pathIsFolder, getFolderFiles, filterFolderMdFiles, gettingFileExt, gettingUrls, getUniqueUrls, getStats } from "../api";
 
 describe ('validatePath', () => {
     it('validatePath should return true for valid path', () => {
@@ -44,7 +44,7 @@ describe ('pathIsFolder', () => {
 describe('getFolderFiles', () => {
     it('getFolderFiles should return an array of files', () => {
         const result = './mockFolderFiles';
-        expect(getFolderFiles(result)).toEqual(['.DS_Store', 'Img1.png', 'Img2.png']);
+        expect(getFolderFiles(result)).toEqual(['.DS_Store', 'Img1.png', 'Img2.png', 'archivo3.md']);
     })
 })
 
@@ -67,12 +67,12 @@ describe('gettingFileExt', () => {
     })
 })
 
-describe('gettingUrls', () => {
-    it('gettingUrls should return an array of links', () => {
-        const fileContent = '[Esto si es HBO] (https://www.hbomax.com/mx/es)';
-        const result = gettingUrls(fileContent, '/', { validate: false });
-        expect(result.urlArray).toEqual(['https://www.hbomax.com/mx/es']);
-    })
+test('gettingUrls', () => {
+    const fileContent = '[Esto si es HBO] (https://www.hbomax.com/mx/es)';
+    const result = gettingUrls(fileContent, '/', { validate: false });
+    return result.then(data => {
+        expect(data.urlArray).toEqual(['https://www.hbomax.com/mx/es'])
+    });
 })
 
 describe('getUniqueUrls', () => {
@@ -80,5 +80,30 @@ describe('getUniqueUrls', () => {
         const links = ['https://www.homax.com/mx/es','http://arboleess.com/','https://www.hbomax.com/mx/es']
         const result = getUniqueUrls(links);
         expect(result).toEqual(['https://www.homax.com/mx/es','http://arboleess.com/','https://www.hbomax.com/mx/es']);
+    })
+})
+
+describe('getStats', () => {
+    it('getStats', () => {
+    const mockData = {
+        urlArray: ['https://www.instagram.com/', 'https://www.facebook.com/'],
+        linksObject: [{
+            text: 'Esto es instagram',
+            href: 'https://www.instagram.com/',
+            file: './archivo2.md',
+            status: 200,
+            ok: 'OK'
+        },
+        {
+            text: 'Esto es facebook',
+            href: 'https://www.facebook.com/',
+            file: './archivo2.md',
+            status: 200,
+            ok: 'OK'
+        }],
+    }
+    const result = getStats({validate: true, stats: true}, mockData)
+    console.log(result)
+    expect(result).toBe('Total: 2\nUnique: 2\nBroken: 0')
     })
 })

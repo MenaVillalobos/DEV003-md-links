@@ -33,16 +33,13 @@ yarg
             stats: false,
         }
         if (yarg.argv.v) {
-            console.log('Ingresó -v');
             options.validate = true;
         } 
         if (yarg.argv.s) {
-            console.log('Ingresó -s');
             options.stats = true;
         }
         mdLinks(yarg.argv._[0], options).then(
             (linksObject) => {
-                console.log('resolviendo promesa...');
                 console.log(linksObject);
             }
         ).catch(

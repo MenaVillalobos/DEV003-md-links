@@ -52,7 +52,7 @@ export function gettingFileExt(pathFile) {
 }
 
 // ✅ Getting URL's from files
-export function gettingUrls(data, pathFile, options) {
+export async function gettingUrls(data, pathFile, options) {
     // console.log('GETTING URLS...'.bold);
     let elements = data.match(/\[.*?\)/g);
     if (elements && elements.length > 0) {
@@ -69,20 +69,17 @@ export function gettingUrls(data, pathFile, options) {
                 file: pathFile
             }
             if (options.validate) {
-                httpReqAnswer = httpRequest(url);
+                httpReqAnswer = await httpRequest(url);
                 // console.log(httpReqAnswer);
                 linkObj.status = httpReqAnswer.status;
                 linkObj.ok = httpReqAnswer.ok;
             }
-            // const linkTxtArray = []; // empty array to storage the file txt
-            // linkTxtArray.push(txt);
             linksObject.push(linkObj);
             // const getTotalLinks = (linksObject) => {return 'Total: ' + linksObject.length};
             // console.log(linksObject.length + 'Total de URLS'.bgRed);
             
         }
-        // console.log(urlArray);
-        return {urlArray, linksObject}
+        return Promise.resolve({urlArray, linksObject})
     }
     
 } 
@@ -92,6 +89,26 @@ export function getUniqueUrls(urlArray) {
     let uniqueUrls = urlArray.filter((c, index) => {
         return urlArray.indexOf(c) === index;
     });
-    console.log('UNIQUE LINKS: '.green + uniqueUrls.length);
     return uniqueUrls
+}
+
+export function getStats(options, data) {
+    if (options.stats && options.validate) {
+        const arrayFiltered = data.linksObject.filter((element) => {
+            return element.status !== 200;
+        })
+        console.log('You selected'.bold + ' --STATS --VALIDATE'.bold.magenta);
+        const uniqueUrls = getUniqueUrls(data.urlArray);
+        return `Total: ${data.linksObject.length}\nUnique: ${uniqueUrls.length}\nBroken: ${arrayFiltered.length}`
+    } else if (options.stats) {
+        console.log('You selected'.bold + ' --STATS'.bold.blue);
+        const uniqueUrls = getUniqueUrls(data.urlArray);
+        return `Total: ${data.linksObject.length}\nUnique: ${uniqueUrls.length}`
+    } else if (options.validate) {
+        const arrayFiltered = data.linksObject.filter((element) => {
+            return element.status !== 200;
+        })
+        const uniqueUrls = getUniqueUrls(data.urlArray);
+        return `Total: ${data.linksObject.length}\nUnique: ${uniqueUrls.length}\nBroken: ${arrayFiltered.length}`
+    }
 }
