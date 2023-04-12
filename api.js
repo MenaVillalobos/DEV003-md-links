@@ -42,7 +42,7 @@ export function filterFolderMdFiles(files) {
 }
 
 
-// ✅ Function get file extension (S I   F U N C I O N A )
+// ✅ Function get file extension
 export function gettingFileExt(pathFile) {
     if (path.extname(pathFile) === ".md") {
         console.log(`${pathFile} ${'IS AN MD FILE(:'.magenta}`);
@@ -53,7 +53,7 @@ export function gettingFileExt(pathFile) {
 
 // ✅ Getting URL's from files
 export async function gettingUrls(data, pathFile, options) {
-    // console.log('GETTING URLS...'.bold);
+    console.log('GETTING URLS...'.bold);
     let elements = data.match(/\[.*?\)/g);
     if (elements && elements.length > 0) {
         const urlArray = []; // empty array to storage the url
@@ -70,14 +70,10 @@ export async function gettingUrls(data, pathFile, options) {
             }
             if (options.validate) {
                 httpReqAnswer = await httpRequest(url);
-                // console.log(httpReqAnswer);
                 linkObj.status = httpReqAnswer.status;
                 linkObj.ok = httpReqAnswer.ok;
             }
             linksObject.push(linkObj);
-            // const getTotalLinks = (linksObject) => {return 'Total: ' + linksObject.length};
-            // console.log(linksObject.length + 'Total de URLS'.bgRed);
-            
         }
         return Promise.resolve({urlArray, linksObject})
     }

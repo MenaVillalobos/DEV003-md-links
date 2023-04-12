@@ -7,7 +7,7 @@ export function readingFiles(file) {
   return fs.readFileSync(file, {encoding:'utf8'});
 }
 export function mdLinks (pathFile, options) {
-  // Validando path
+  // Validating path
 if (validatePath(pathFile)){
   console.log('THE PATH EXISTS'.rainbow);
   // Path absolute
