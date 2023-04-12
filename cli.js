@@ -1,3 +1,4 @@
+#! /usr/local/bin/node
 // Aquí va --stats, --validate
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
