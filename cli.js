@@ -26,8 +26,6 @@ yarg
         })
         .argv;
 
-        // console.log(yarg.argv);
-        // console.log('validate: yargs', argv.v);
         const options = {
             validate: false,
             stats: false,
@@ -47,12 +45,3 @@ yarg
                 console.log(error.red);
             }
         );
-
-// Crear objeto options 
-// Caso 1: ambos valores false
-    // sobran else
-    // Checa file sin -v ni -s
-// Caso 2: checa file con -v o -s
-    // sobran else
-
-
